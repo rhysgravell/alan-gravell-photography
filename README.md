@@ -16,7 +16,7 @@ npm install
 npm run dev
 ```
 
-`npm run lint` and `npm run build` should both pass before a PR.
+`npm run lint`, `npm run typecheck` and `npm run build` should all pass before a PR.
 
 ## Pages
 
@@ -33,8 +33,8 @@ npm run dev
 
 All copy in the handoff is placeholder until the client supplies the real text and photographs.
 
-- **Series**: one JSON file per series in `content/series/`, named by its URL slug. `order` sets the sequence (Roman numerals follow it), `tint` is one of `sky`, `sage`, `sand`, `mist`, and `cover` is the plate number to use as the cover. Each plate needs `title`, `year`, `width` and `height`; `image`, `medium`, `size` and `edition` are optional. Adding a file adds a series; no code changes needed. A mistake in a file (unknown tint, missing size, bad cover number) fails the build with an error naming the file and field.
-- **Site copy**: name, email, featured photograph, bio, exhibitions and contact text live in `content/site.ts`.
+- **Series**: one JSON file per series in `content/series/`, named by its URL slug. `order` sets the sequence (Roman numerals follow it), `tint` is one of `sky`, `sage`, `sand`, `mist`, and `cover` is the plate number to use as the cover. Each plate needs `title`, `year`, `width` and `height`; `image`, `medium`, `size` and `edition` are optional. Adding a file adds a series; no code changes needed. A mistake in a file (unknown tint, missing size, bad cover number, an `image` not in `public/`, two series with the same `order`) fails the build with an error naming the file and field.
+- **Site copy**: name, email, featured photograph, bio, exhibitions and contact text live in `content/site.ts`. A `featured` plate that doesn't exist fails the build.
 
 ### Photographs
 
