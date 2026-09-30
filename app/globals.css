@@ -1,26 +1,134 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Design tokens, copied from the handoff's tokens/ folder. typography.css is
+   the one edit: its families point at next/font instead of Google's CDN. */
+@import "./tokens/colors.css";
+@import "./tokens/typography.css";
+@import "./tokens/spacing.css";
+@import "./tokens/motion.css";
 
+/* Expose the semantic tokens to Tailwind. Inline so the classes resolve to
+   the custom properties, which lets [data-theme="gallery"] override them. */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-page: var(--surface-page);
+  --color-raised: var(--surface-raised);
+  --color-plate: var(--surface-plate);
+  --color-lightbox: var(--surface-lightbox);
+  --color-primary: var(--text-primary);
+  --color-secondary: var(--text-secondary);
+  --color-quiet: var(--text-quiet);
+  --color-on-dark: var(--text-on-dark);
+  --color-on-dark-secondary: var(--text-on-dark-secondary);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-tint-sky: var(--tint-sky);
+  --color-tint-sage: var(--tint-sage);
+  --color-tint-sand: var(--tint-sand);
+  --color-tint-mist: var(--tint-mist);
+
+  --font-serif: var(--font-display);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-label);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* The type scale. Each role is a font shorthand token plus its tracking, so
+   one class sets the whole role. */
+@utility type-display-xl {
+  font: var(--type-display-xl);
+  letter-spacing: var(--tracking-display);
+}
+@utility type-display-l {
+  font: var(--type-display-l);
+  letter-spacing: var(--tracking-display);
+}
+@utility type-display-m {
+  font: var(--type-display-m);
+}
+@utility type-display-s {
+  font: var(--type-display-s);
+}
+@utility type-quote {
+  font: var(--type-quote);
+}
+@utility type-body-l {
+  font: var(--type-body-l);
+}
+@utility type-body {
+  font: var(--type-body);
+}
+@utility type-body-s {
+  font: var(--type-body-s);
+}
+/* Labels are written in sentence case in source and uppercased here, per the
+   content guidelines. */
+@utility type-label {
+  font: var(--type-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+@utility type-label-l {
+  font: var(--type-label-l);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+/* Text links: a 1px bottom border rather than text-decoration, turning accent
+   on hover. Opt-in, because most links on the site (nav, cards, index rows)
+   are whole blocks that must not be underlined. */
+@utility link {
+  border-bottom: var(--hairline) solid currentColor;
+  transition: color var(--dur-quick) var(--ease-gallery);
+  &:hover {
+    color: var(--accent);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Full-bleed bands (the home quote, series headers) pull out through the page
+   gutter to the wrapper's edges, then pad their content back in line. */
+@utility bleed {
+  margin-inline: calc(-1 * var(--page-gutter));
+  padding-inline: var(--page-gutter);
+}
+
+@layer base {
+  html {
+    background: var(--surface-page);
+  }
+
+  body {
+    background: var(--surface-page);
+    color: var(--text-primary);
+    font: var(--type-body);
+  }
+
+  ::selection {
+    background: var(--ink-9);
+    color: var(--paper-0);
+  }
+
+  :focus-visible {
+    outline: var(--hairline) solid var(--focus-ring);
+    outline-offset: 4px;
+  }
+}
+
+/* Motion is fades only. Pages and images fade in over --dur-fade. */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.fade-in {
+  animation: fade-in var(--dur-fade) var(--ease-gallery);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

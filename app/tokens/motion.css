@@ -1,0 +1,6 @@
+:root {
+  --ease-gallery: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-quick: 180ms;
+  --dur-fade: 600ms;
+  --dur-slow: 1200ms;
+}
