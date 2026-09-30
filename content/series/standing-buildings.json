@@ -1,0 +1,34 @@
+{
+  "order": 3,
+  "title": "Standing Buildings",
+  "years": "2001–2008",
+  "tint": "sand",
+  "statement": "Barns, chapels and farmhouses at the edge of use, photographed in flat morning light as the land slowly takes them back.",
+  "cover": 1,
+  "plates": [
+    {
+      "title": "Chapel gable",
+      "year": "2001",
+      "width": 2000,
+      "height": 3000
+    },
+    {
+      "title": "Barn, north wall",
+      "year": "2003",
+      "width": 2400,
+      "height": 3000
+    },
+    {
+      "title": "Farmhouse in rain",
+      "year": "2005",
+      "width": 3000,
+      "height": 2000
+    },
+    {
+      "title": "Doorway",
+      "year": "2008",
+      "width": 2400,
+      "height": 3000
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+:root {
+  /* Families come from next/font (see app/layout.tsx), which self-hosts the
+     Google Fonts the handoff loaded from fonts.css. */
+  --font-display: var(--font-cormorant), Garamond, "Times New Roman", serif;
+  --font-body: var(--font-hanken), "Helvetica Neue", Helvetica, sans-serif;
+  --font-label: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Display scale (serif, light 300) */
+  --type-display-xl: 300 clamp(56px, 8vw, 128px)/0.95 var(--font-display);
+  --type-display-l: 300 clamp(40px, 5vw, 72px)/1.0 var(--font-display);
+  --type-display-m: 300 40px/1.1 var(--font-display);
+  --type-display-s: 400 28px/1.2 var(--font-display);
+  --type-quote: italic 300 32px/1.3 var(--font-display);
+
+  /* Body (sans) */
+  --type-body-l: 300 19px/1.65 var(--font-body);
+  --type-body: 400 16px/1.6 var(--font-body);
+  --type-body-s: 400 14px/1.55 var(--font-body);
+
+  /* Labels (mono, uppercase, tracked) — wall labels, nav, metadata */
+  --type-label: 400 11px/1.5 var(--font-label);
+  --type-label-l: 400 12px/1.5 var(--font-label);
+  --tracking-label: 0.14em;
+  --tracking-display: -0.01em;
+}

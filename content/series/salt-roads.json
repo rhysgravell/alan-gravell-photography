@@ -1,0 +1,28 @@
+{
+  "order": 4,
+  "title": "Salt Roads",
+  "years": "1986–1999",
+  "tint": "mist",
+  "statement": "Early work. Black-and-white roads across the marshes, made from the driver’s seat on long evening drives.",
+  "cover": 1,
+  "plates": [
+    {
+      "title": "Causeway",
+      "year": "1986",
+      "width": 3000,
+      "height": 2000
+    },
+    {
+      "title": "Telegraph line",
+      "year": "1990",
+      "width": 3200,
+      "height": 1800
+    },
+    {
+      "title": "Turning place",
+      "year": "1995",
+      "width": 3000,
+      "height": 2000
+    }
+  ]
+}

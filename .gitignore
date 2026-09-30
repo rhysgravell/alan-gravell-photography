@@ -5,7 +5,9 @@
 .Trashes
 
 # Editors
-.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
 .idea/
 *.swp
 
@@ -23,6 +25,14 @@ build/
 .next/
 out/
 .astro/
+.vercel/
+
+# Next.js / TypeScript
+next-env.d.ts
+*.tsbuildinfo
+
+# Testing
+coverage/
 
 # Logs
 *.log

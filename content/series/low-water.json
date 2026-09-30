@@ -1,0 +1,40 @@
+{
+  "order": 1,
+  "title": "Low Water",
+  "years": "2016–2021",
+  "tint": "sky",
+  "statement": "Made over five winters along the estuary, always at low tide, when the water withdraws and the mud holds the sky for an hour or two.",
+  "cover": 1,
+  "plates": [
+    {
+      "title": "Channel at dusk",
+      "year": "2016",
+      "width": 3000,
+      "height": 2000
+    },
+    {
+      "title": "Mooring posts",
+      "year": "2017",
+      "width": 2400,
+      "height": 3000
+    },
+    {
+      "title": "Mud and cloud",
+      "year": "2018",
+      "width": 3000,
+      "height": 2000
+    },
+    {
+      "title": "The far bank",
+      "year": "2019",
+      "width": 2400,
+      "height": 2400
+    },
+    {
+      "title": "Returning tide",
+      "year": "2021",
+      "width": 3200,
+      "height": 1800
+    }
+  ]
+}
