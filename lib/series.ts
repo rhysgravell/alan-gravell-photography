@@ -54,6 +54,7 @@ type SeriesFile = {
 };
 
 const SERIES_DIR = path.join(process.cwd(), "content/series");
+const PUBLIC_DIR = path.join(process.cwd(), "public");
 
 const DEFAULT_MEDIUM = "Archival pigment print";
 const DEFAULT_EDITION = "7 + 2 AP";
@@ -99,6 +100,8 @@ function validate(file: string, data: SeriesFile): void {
     if (!plate.year) fail(`${at} needs a "year"`);
     if (!(plate.width > 0 && plate.height > 0))
       fail(`${at} needs a positive "width" and "height" in pixels`);
+    if (plate.image && !fs.existsSync(path.join(PUBLIC_DIR, plate.image)))
+      fail(`${at} "image" ${plate.image} is not in public/`);
   });
   if (
     data.cover !== undefined &&
@@ -120,8 +123,19 @@ export function getAllSeries(): Series[] {
       fs.readFileSync(path.join(SERIES_DIR, file), "utf8"),
     ) as SeriesFile;
     validate(file, data);
-    return { slug: path.basename(file, ".json"), data };
+    return { file, slug: path.basename(file, ".json"), data };
   });
+
+  // Two series with the same order would sort by file name, silently.
+  const orders = new Map<number, string>();
+  for (const { file, data } of raw) {
+    const clash = orders.get(data.order);
+    if (clash)
+      throw new Error(
+        `content/series/${file}: "order" ${data.order} is also used by ${clash}`,
+      );
+    orders.set(data.order, file);
+  }
 
   // Numerals follow the sorted position, not the raw order value, so a gap
   // left by removing a series never produces a skipped numeral.

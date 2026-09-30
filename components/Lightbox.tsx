@@ -38,6 +38,12 @@ export default function Lightbox({ series, plate }: LightboxProps) {
     return () => window.removeEventListener("keydown", onKey);
   }, [router, series.slug, seriesHref, prev, next]);
 
+  // Fetch the neighbours ahead of time, so stepping shows the next
+  // photograph at once rather than an empty mat while it downloads.
+  useEffect(() => {
+    for (const p of [prev, next]) if (p.image) new Image().src = p.image;
+  }, [prev, next]);
+
   // The plate on screen, for handing focus back when the lightbox closes.
   const shown = useRef(plate.no);
   useEffect(() => {
@@ -116,7 +122,11 @@ export default function Lightbox({ series, plate }: LightboxProps) {
         >
           ← Prev
         </Link>
-        <div className="flex flex-col items-center gap-1.5 text-center">
+        {/* Live, so screen readers hear each plate as the arrows step on. */}
+        <div
+          aria-live="polite"
+          className="flex flex-col items-center gap-1.5 text-center"
+        >
           <span className="type-display-s normal-case">{plate.title}</span>
           <span className="text-on-dark-secondary">{plateMeta(plate)}</span>
         </div>
