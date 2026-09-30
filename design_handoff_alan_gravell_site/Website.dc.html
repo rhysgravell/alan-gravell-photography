@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="./styles.css">
+<script src="./image-slot.js"></script>
+<style>
+html,body{margin:0;background:var(--surface-page);}
+a{color:inherit;text-decoration:none;border-bottom:1px solid currentColor;}
+a:hover{color:var(--accent);}
+::selection{background:var(--ink-9);color:var(--paper-0);}
+input,textarea,button{font:inherit;color:inherit;}
+</style>
+</helmet>
+<div data-theme="{{ theme }}" style="min-height:100vh;background:var(--surface-page);color:var(--text-primary);font:var(--type-body);transition:background 600ms var(--ease-gallery),color 600ms var(--ease-gallery);">
+<div style="max-width:var(--page-max);margin:0 auto;padding:0 var(--page-gutter);">
+
+  <header data-screen-label="Header" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:16px 40px;padding:40px 0 0;">
+    <div onClick="{{ goHome }}" style="font:400 26px/1 var(--font-display);letter-spacing:0.01em;cursor:pointer;">{{ name }}</div>
+    <nav style="display:flex;gap:32px;">
+      <sc-for list="{{ nav }}" as="n" hint-placeholder-count="3">
+        <div onClick="{{ n.go }}" style="display:flex;align-items:center;gap:8px;cursor:pointer;font:var(--type-label-l);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--text-secondary);">
+          <span style="width:5px;height:5px;border-radius:50%;background:var(--accent);opacity:{{ n.dot }};"></span>
+          <span style="color:{{ n.color }};">{{ n.label }}</span>
+        </div>
+      </sc-for>
+    </nav>
+  </header>
+
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+    <main data-screen-label="Home" style="padding:var(--space-10) 0 var(--space-9);">
+      <sc-if value="{{ isSingle }}" hint-placeholder-val="{{ true }}">
+        <section style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:var(--space-6) var(--space-7);">
+          <div onClick="{{ openFeatured }}" style="flex:1 1 520px;max-width:980px;margin-left:auto;aspect-ratio:3 / 2;cursor:zoom-in;">
+            <image-slot id="s1-p1" shape="rect" placeholder="Featured photograph · landscape 3:2"></image-slot>
+          </div>
+          <div style="flex:0 1 220px;display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:12px;">
+            <div style="font:var(--type-label);letter-spacing:var(--tracking-label);text-transform:uppercase;">No. 01</div>
+            <div style="font:var(--type-display-s);">{{ featured.title }}</div>
+            <div style="font:var(--type-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--text-secondary);">{{ featured.year }} · Archival pigment print</div>
+          </div>
+        </section>
+      </sc-if>
+      <sc-if value="{{ isDiptych }}" hint-placeholder-val="{{ false }}">
+        <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:var(--space-7);align-items:end;">
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div onClick="{{ openFeatured }}" style="aspect-ratio:4 / 5;cursor:zoom-in;"><image-slot id="home-d1" shape="rect" placeholder="Diptych left · portrait 4:5"></image-slot></div>
+            <div style="font:var(--type-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--text-secondary);">{{ featured.title }} · {{ featured.year }}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:14px;padding-bottom:var(--space-10);">
+            <div style="aspect-ratio:4 / 5;"><image-slot id="home-d2" shape="rect" placeholder="Diptych right · portrait 4:5"></image-slot></div>
+            <div style="font:var(--type-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--text-secondary);">From the series {{ featured.series }}</div>
+          </div>
+        </section>
+      </sc-if>
+
+      <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:var(--space-7);margin:var(--space-10) calc(-1 * var(--page-gutter)) 0;padding:var(--space-9) var(--page-gutter);background:{{ tintSky }};">
+        <div style="font:var(--type-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--text-secondary);">Landscapes, buildings &amp; nature</div>
+        <p style="margin:0;font:var(--type-quote);max-width:22em;text-wrap:pretty;">I photograph the places I keep returning to, and wait for the light to finish its sentence.</p>
+      </section>
+
+      <section style="margin-top:var(--space-10);">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:14px;font:var(--type-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--text-secondary);">
+          <span>Series</span>
+          <span onClick="{{ goWork }}" style="cursor:pointer;color:var(--text-primary);border-bottom:1px solid currentColor;padding-bottom:2px;">All work →</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:var(--space-7) var(--space-6);margin-top:var(--space-7);">
+          <sc-for list="{{ series }}" as="s" hint-placeholder-count="3">
+            <div onClick="{{ s.open }}" style="display:flex;flex-direction:column;gap:14px;cursor:pointer;">
+              <div style="aspect-ratio:4 / 5;"><image-slot id="{{ s.coverId }}-cover" shape="rect" placeholder="Series cover · 4:5"></image-slot></div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;">
+                <span style="font:var(--type-display-s);">{{ s.title }}</span>
+                <span style="font:var(--type-label);letter-spacing:var(--tracking-label);color:var(--text-secondary);">{{ s.roman }}</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </main>
+  </sc-if>
+
+  <sc-if value="{{ isWork }}" hint-placeholder-val="{{ false }}">
+    <main data-screen-label="Work" style="padding:var(--space-9) 0 var(--space-9);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:var(--space-8);align-items:start;">
+      <div>
+        <div style="font:var(--type-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--text-secondary);padding-bottom:14px;border-bottom:1px solid var(--line);">Index of series</div>
+        <sc-for list="{{ series }}" as="s" hint-placeholder-count="4">
+          <div onClick="{{ s.open }}" onMouseEnter="{{ s.hover }}" style="display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:20px;align-items:baseline;padding:28px 0;border-bottom:1px solid var(--line);cursor:pointer;opacity:{{ s.opacity }};background:{{ s.rowBg }};margin:0 -16px;padding-left:16px;padding-right:16px;transition:opacity 400ms var(--ease-gallery),background 400ms var(--ease-gallery);">
+            <span style="font:var(--type-label);letter-spacing:var(--tracking-label);color:var(--text-secondary);">{{ s.roman }}</span>
+            <span style="font:var(--type-display-l);letter-spacing:var(--tracking-display);">{{ s.title }}</span>
+            <span style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;font:var(--type-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--text-secondary);"><span>{{ s.years }}</span><span>{{ s.count }} plates</span></span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="position:sticky;top:40px;display:flex;flex-direction:column;gap:14px;">
+        <div style="aspect-ratio:4 / 5;"><image-slot id="{{ preview.coverId }}-cover" shape="rect" placeholder="Series cover · 4:5"></image-slot></div>
+        <div style="font:var(--type-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--text-secondary);">{{ preview.roman }} · {{ preview.title }}</div>
+      </div>
+    </main>
+  </sc-if>
+
+  <sc-if value="{{ isSeries }}" hint-placeholder-val="{{ false }}">
+    <main data-screen-label="Series" style="padding:0 0 var(--space-9);margin-top:40px;">
+      <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:var(--space-7);align-items:end;margin:0 calc(-1 * var(--page-gutter)) var(--space-9);padding:var(--space-9) var(--page-gutter);background:{{ cur.tint }};">
+        <div style="display:flex;flex-direction:column;gap:20px;">
+          <div style="font:var(--type-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--text-secondary);">Series {{ cur.roman }} · {{ cur.years }}</div>
+          <h1 style="margin:0;font:var(--type-display-xl);letter-spacing:var(--tracking-display);">{{ cur.title }}</h1>
+        </div>
+        <p style="margin:0;font:var(--type-body-l);max-width:var(--measure);text-wrap:pretty;">{{ cur.statement }}</p>
+      </section>
+      <div style="display:flex;flex-direction:column;gap:var(--space-10);">
+        <sc-for list="{{ plates }}" as="p" hint-placeholder-count="3">
+          <figure style="margin:0;display:flex;justify-content:{{ p.justify }};">
+            <div style="width:{{ p.width }};display:flex;flex-direction:column;gap:14px;">
+              <div onClick="{{ p.open }}" style="aspect-ratio:{{ p.ratio }};cursor:zoom-in;"><image-slot id="{{ p.id }}" shape="rect" placeholder="{{ p.ph }}"></image-slot></div>
+              <figcaption style="display:flex;flex-wrap:wrap;gap:6px 20px;font:var(--type-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--text-secondary);">
+                <span style="color:var(--text-primary);">No. {{ p.no }}</span><span>{{ p.title }}</span><span>{{ p.year }}</span>
+              </figcaption>
+            </div>
+          </figure>
+        </sc-for>
+      </div>
+      <div onClick="{{ nextSeries.open }}" style="margin-top:var(--space-10);border-top:1px solid var(--line);padding-top:var(--space-6);display:flex;justify-content:space-between;align-items:baseline;gap:20px;cursor:pointer;">
+        <span style="font:var(--type-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--text-secondary);">Next series</span>
+        <span style="font:var(--type-display-l);">{{ nextSeries.title }} →</span>
+      </div>
+    </main>
+  </sc-if>
+
+  <sc-if value="{{ isAbout }}" hint-placeholder-val="{{ false }}">
+    <main data-screen-label="About" style="padding:var(--space-9) 0 var(--space-9);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:var(--space-8);align-items:start;">
+      <div style="display:flex;flex-direction:column;gap:14px;max-width:520px;">
+        <div style="aspect-ratio:4 / 5;"><image-slot id="portrait" shape="rect" placeholder="Portrait of the photographer · 4:5"></image-slot></div>
+        <div style="font:var(--type-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--text-secondary);">In the studio, 2024</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-7);">
+        <h1 style="margin:0;font:var(--type-display-l);letter-spacing:var(--tracking-display);">{{ name }}</h1>
+        <div style="display:flex;flex-direction:column;gap:20px;font:var(--type-body-l);max-width:var(--measure);text-wrap:pretty;">
+          <p style="margin:0;">I have been photographing for forty years, almost always on film and almost always close to home. The work is slow: the same shoreline, the same orchard, the same rooms, visited again and again until they begin to show me something new.</p>
+          <p style="margin:0;">Every print is made by hand, in small editions, on archival cotton paper.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;">
+          <div style="font:var(--type-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--text-secondary);padding-bottom:12px;border-bottom:1px solid var(--line);">Selected exhibitions</div>
+          <sc-for list="{{ cv }}" as="c" hint-placeholder-count="4">
+            <div style="display:grid;grid-template-columns:72px minmax(0,1fr);gap:20px;padding:14px 0;border-bottom:1px solid var(--line);font:var(--type-body-s);">
+              <span style="font:var(--type-label);letter-spacing:var(--tracking-label);color:var(--text-secondary);">{{ c.year }}</span><span>{{ c.text }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </main>
+  </sc-if>
+
+  <sc-if value="{{ isContact }}" hint-placeholder-val="{{ false }}">
+    <main data-screen-label="Contact" style="padding:var(--space-9) 0 var(--space-9);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:var(--space-8);align-items:start;">
+      <div style="display:flex;flex-direction:column;gap:var(--space-6);">
+        <h1 style="margin:0;font:var(--type-display-xl);letter-spacing:var(--tracking-display);">Enquiries</h1>
+        <div style="display:flex;flex-direction:column;gap:12px;padding:var(--space-6);background:{{ tintSage }};max-width:var(--measure);">
+          <span style="font:var(--type-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--text-secondary);">Editions</span>
+          <p style="margin:0;font:var(--type-body-l);text-wrap:pretty;">All photographs are available as archival pigment prints, printed and signed by hand in editions of seven. I also welcome enquiries about commissions and exhibitions.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;font:var(--type-label-l);letter-spacing:var(--tracking-label);text-transform:uppercase;">
+          <a href="mailto:studio@example.com" style="align-self:flex-start;">studio@example.com</a>
+          <span style="color:var(--text-secondary);">Studio visits by appointment</span>
+        </div>
+      </div>
+      <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+        <form onSubmit="{{ send }}" style="display:flex;flex-direction:column;gap:var(--space-6);">
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <span style="font:var(--type-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--text-secondary);">Regarding</span>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;">
+              <sc-for list="{{ topics }}" as="t" hint-placeholder-count="4">
+                <button type="button" onClick="{{ t.pick }}" style="font:var(--type-label);letter-spacing:var(--tracking-label);text-transform:uppercase;padding:10px 16px;cursor:pointer;border:1px solid var(--line-strong);background:{{ t.bg }};color:{{ t.fg }};">{{ t.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+          <label style="display:flex;flex-direction:column;gap:6px;">
+            <span style="font:var(--type-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--text-secondary);">Name</span>
+            <input required="" style="border:0;border-bottom:1px solid var(--line-strong);background:transparent;padding:10px 0;outline:none;font:var(--type-body-l);" style-focus="border-bottom-color:var(--accent);"></input>
+          </label>
+          <label style="display:flex;flex-direction:column;gap:6px;">
+            <span style="font:var(--type-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--text-secondary);">Email</span>
+            <input type="email" required="" style="border:0;border-bottom:1px solid var(--line-strong);background:transparent;padding:10px 0;outline:none;font:var(--type-body-l);" style-focus="border-bottom-color:var(--accent);"></input>
+          </label>
+          <label style="display:flex;flex-direction:column;gap:6px;">
+            <span style="font:var(--type-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--text-secondary);">Message</span>
+            <textarea rows="5" placeholder="Which photograph, and anything else I should know" style="border:0;border-bottom:1px solid var(--line-strong);background:transparent;padding:10px 0;outline:none;resize:vertical;font:var(--type-body-l);" style-focus="border-bottom-color:var(--accent);"></textarea>
+          </label>
+          <button type="submit" style="align-self:flex-start;font:var(--type-label-l);letter-spacing:var(--tracking-label);text-transform:uppercase;padding:16px 28px;border:1px solid var(--line-strong);background:var(--text-primary);color:var(--surface-page);cursor:pointer;" style-hover="background:transparent;color:var(--text-primary);">Send enquiry</button>
+        </form>
+      </sc-if>
+      <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:16px;border-top:1px solid var(--line);padding-top:var(--space-6);">
+          <div style="font:var(--type-display-m);">Thank you.</div>
+          <p style="margin:0;font:var(--type-body);color:var(--text-secondary);max-width:var(--measure);">Your note has been received. I reply to every enquiry personally, usually within a few days.</p>
+        </div>
+      </sc-if>
+    </main>
+  </sc-if>
+
+  <footer style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;padding:28px 0 40px;border-top:1px solid var(--line);font:var(--type-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--text-secondary);">
+    <span>© 2026 {{ name }}</span>
+    <div style="display:flex;gap:28px;">
+      <span>Instagram</span>
+      <span onClick="{{ goContact }}" style="cursor:pointer;">Print enquiries</span>
+    </div>
+  </footer>
+</div>
+
+<sc-if value="{{ lbOpen }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Lightbox" style="position:fixed;inset:0;z-index:50;background:var(--surface-lightbox);color:var(--text-on-dark);display:grid;grid-template-rows:auto minmax(0,1fr) auto;padding:24px var(--page-gutter);">
+    <div style="display:flex;justify-content:space-between;align-items:center;font:var(--type-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--text-on-dark-secondary);">
+      <span>{{ cur.title }} · {{ lb.pos }}</span>
+      <span onClick="{{ closeLb }}" style="cursor:pointer;color:var(--text-on-dark);padding:8px;">Close ×</span>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;min-height:0;padding:var(--mat) 0;">
+      <div style="height:100%;max-width:100%;aspect-ratio:{{ lb.ratio }};max-height:100%;">
+        <image-slot id="{{ lb.id }}" shape="rect" fit="contain" placeholder="{{ lb.ph }}"></image-slot>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:20px;font:var(--type-label);letter-spacing:var(--tracking-label);text-transform:uppercase;">
+      <span onClick="{{ prev }}" style="cursor:pointer;justify-self:start;padding:8px 0;">← Prev</span>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;">
+        <span style="font:var(--type-display-s);text-transform:none;letter-spacing:0;">{{ lb.title }}</span>
+        <span style="color:var(--text-on-dark-secondary);">No. {{ lb.no }} · {{ lb.year }} · Archival pigment print · Edition of 7</span>
+      </div>
+      <span onClick="{{ next }}" style="cursor:pointer;justify-self:end;padding:8px 0;">Next →</span>
+    </div>
+  </div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;photographerName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Alan Gravell&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;tints&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;paper&quot;,&quot;gallery&quot;],&quot;default&quot;:&quot;paper&quot;,&quot;tsType&quot;:&quot;'paper'|'gallery'&quot;},&quot;homeLayout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;single&quot;,&quot;diptych&quot;],&quot;default&quot;:&quot;single&quot;,&quot;tsType&quot;:&quot;'single'|'diptych'&quot;}}">
+const ROMAN = ['I','II','III','IV','V','VI'];
+const SERIES = [
+  { title: 'Low Water', years: '2016–2021', statement: 'Made over five winters along the estuary, always at low tide, when the water withdraws and the mud holds the sky for an hour or two.',
+    plates: [['Channel at dusk','2016','3 / 2'],['Mooring posts','2017','4 / 5'],['Mud and cloud','2018','3 / 2'],['The far bank','2019','1 / 1'],['Returning tide','2021','16 / 9']] },
+  { title: 'Winter Orchard', years: '2009–2014', statement: 'One small orchard, photographed only between the first frost and the first blossom. Nothing is added; the trees do all of the drawing.',
+    plates: [['Row nine','2009','4 / 5'],['Fog, February','2011','3 / 2'],['Pruned','2012','2 / 3'],['Last apple','2014','1 / 1']] },
+  { title: 'Standing Buildings', years: '2001–2008', statement: 'Barns, chapels and farmhouses at the edge of use, photographed in flat morning light as the land slowly takes them back.',
+    plates: [['Chapel gable','2001','2 / 3'],['Barn, north wall','2003','4 / 5'],['Farmhouse in rain','2005','3 / 2'],['Doorway','2008','4 / 5']] },
+  { title: 'Salt Roads', years: '1986–1999', statement: 'Early work. Black-and-white roads across the marshes, made from the driver’s seat on long evening drives.',
+    plates: [['Causeway','1986','3 / 2'],['Telegraph line','1990','16 / 9'],['Turning place','1995','3 / 2']] },
+];
+const WIDTHS = ['min(100%, 980px)','min(100%, 620px)','min(100%, 820px)','min(100%, 560px)','min(100%, 1100px)'];
+const JUST = ['flex-start','flex-end','center','flex-start','flex-end'];
+const CV = [
+  ['2025','Low Water — solo exhibition, Harbour Gallery'],
+  ['2022','Group show: Tidelines, Regional Arts Centre'],
+  ['2015','Winter Orchard — solo exhibition, The Print Room'],
+  ['2009','The Quiet Rooms — book launch and exhibition'],
+];
+const TINTS = ['var(--tint-sky)','var(--tint-sage)','var(--tint-sand)','var(--tint-mist)'];
+const TOPICS = ['Print','Commission','Exhibition','Other'];
+
+class Component extends DCLogic {
+  state = { page: 'home', s: 0, hover: 0, lb: null, sent: false, topic: 'Print' };
+  onKey = (e) => {
+    if (this.state.lb == null) return;
+    if (e.key === 'Escape') this.setState({ lb: null });
+    if (e.key === 'ArrowRight') this.step(1);
+    if (e.key === 'ArrowLeft') this.step(-1);
+  };
+  componentDidMount() { window.addEventListener('keydown', this.onKey); }
+  componentWillUnmount() { window.removeEventListener('keydown', this.onKey); }
+  step(d) { const n = SERIES[this.state.s].plates.length; this.setState(st => ({ lb: (st.lb + d + n) % n })); }
+  go(page, extra = {}) { this.setState({ page, lb: null, ...extra }); window.scrollTo({ top: 0 }); }
+  plate(si, pi) {
+    const [title, year, ratio] = SERIES[si].plates[pi];
+    const no = String(pi + 1).padStart(2, '0');
+    return { id: `s${si + 1}-p${pi + 1}`, no, title, year, ratio,
+      ph: `${SERIES[si].title} · No. ${no} · ${ratio.replace(/ /g, '')}` };
+  }
+  renderVals() {
+    const { page, s, hover, lb, sent, topic } = this.state;
+    const name = this.props.photographerName ?? 'Alan Gravell';
+    const useTints = this.props.tints ?? true;
+    const tint = (i) => useTints ? TINTS[i % TINTS.length] : 'transparent';
+    const theme = this.props.theme ?? 'paper';
+    const layout = this.props.homeLayout ?? 'single';
+    const labels = { work: 'Work', about: 'About', contact: 'Contact' };
+    const active = page === 'series' ? 'work' : page;
+    const series = SERIES.map((x, i) => ({
+      roman: ROMAN[i], title: x.title, years: x.years, count: x.plates.length, coverId: `s${i + 1}`,
+      opacity: page === 'work' && hover !== i ? 0.35 : 1,
+      rowBg: page === 'work' && hover === i ? tint(i) : 'transparent',
+      open: () => this.go('series', { s: i }),
+      hover: () => this.setState({ hover: i }),
+    }));
+    const cur = { ...SERIES[s], roman: ROMAN[s], tint: tint(s) };
+    const ni = (s + 1) % SERIES.length;
+    const plates = cur.plates.map((_, i) => ({ ...this.plate(s, i), width: WIDTHS[i % 5], justify: JUST[i % 5], open: () => this.setState({ lb: i }) }));
+    const lbData = lb != null ? { ...this.plate(s, lb), pos: `${lb + 1} / ${cur.plates.length}` } : {};
+    return {
+      theme, name, tintSky: tint(0), tintSage: tint(1),
+      nav: Object.keys(labels).map(k => ({ label: labels[k], go: () => this.go(k), dot: active === k ? 1 : 0, color: active === k ? 'var(--text-primary)' : 'var(--text-secondary)' })),
+      isHome: page === 'home', isWork: page === 'work', isSeries: page === 'series', isAbout: page === 'about', isContact: page === 'contact',
+      isSingle: layout === 'single', isDiptych: layout === 'diptych',
+      goHome: () => this.go('home'), goWork: () => this.go('work'), goContact: () => this.go('contact'),
+      featured: { title: SERIES[0].plates[0][0], year: SERIES[0].plates[0][1], series: SERIES[0].title },
+      openFeatured: () => this.go('series', { s: 0, lb: 0 }),
+      series, preview: series[hover], cur, plates,
+      nextSeries: { title: SERIES[ni].title, open: () => this.go('series', { s: ni }) },
+      lbOpen: lb != null, lb: lbData,
+      closeLb: () => this.setState({ lb: null }), prev: () => this.step(-1), next: () => this.step(1),
+      cv: CV.map(([year, text]) => ({ year, text })),
+      topics: TOPICS.map(t => ({ label: t, pick: () => this.setState({ topic: t }),
+        bg: topic === t ? 'var(--text-primary)' : 'transparent', fg: topic === t ? 'var(--surface-page)' : 'var(--text-primary)' })),
+      send: (e) => { e.preventDefault(); this.setState({ sent: true }); },
+      sent, notSent: !sent,
+    };
+  }
+}
+</script>
+</body>
+</html>
