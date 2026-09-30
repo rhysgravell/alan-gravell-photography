@@ -73,16 +73,53 @@ function toRoman(n: number): string {
   return out;
 }
 
+const TINTS: Tint[] = ["sky", "sage", "sand", "mist"];
+const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+/** Fail the build with the file and field at fault, rather than rendering a
+ * broken page from a typo in hand-edited content. */
+function validate(file: string, data: SeriesFile): void {
+  const fail = (problem: string) => {
+    throw new Error(`content/series/${file}: ${problem}`);
+  };
+  const slug = path.basename(file, ".json");
+  if (!SLUG.test(slug))
+    fail("file name must be a lowercase URL slug, e.g. low-water.json");
+  if (typeof data.order !== "number") fail('"order" must be a number');
+  for (const key of ["title", "years", "statement"] as const)
+    if (typeof data[key] !== "string" || !data[key])
+      fail(`"${key}" must be a non-empty string`);
+  if (!TINTS.includes(data.tint))
+    fail(`"tint" must be one of ${TINTS.join(", ")}`);
+  if (!Array.isArray(data.plates) || data.plates.length === 0)
+    fail('"plates" must list at least one plate');
+  data.plates.forEach((plate, i) => {
+    const at = `plate ${i + 1}`;
+    if (!plate.title) fail(`${at} needs a "title"`);
+    if (!plate.year) fail(`${at} needs a "year"`);
+    if (!(plate.width > 0 && plate.height > 0))
+      fail(`${at} needs a positive "width" and "height" in pixels`);
+  });
+  if (
+    data.cover !== undefined &&
+    !(Number.isInteger(data.cover) && data.cover >= 1 && data.cover <= data.plates.length)
+  )
+    fail(`"cover" must be a plate number from 1 to ${data.plates.length}`);
+}
+
 let cache: Series[] | undefined;
 
 export function getAllSeries(): Series[] {
-  if (cache) return cache;
+  // Cached for the build, but not in development, where the module outlives
+  // edits to the JSON files and would keep serving the old content.
+  if (cache && process.env.NODE_ENV === "production") return cache;
 
   const files = fs.readdirSync(SERIES_DIR).filter((f) => f.endsWith(".json"));
   const raw = files.map((file) => {
     const data = JSON.parse(
       fs.readFileSync(path.join(SERIES_DIR, file), "utf8"),
     ) as SeriesFile;
+    validate(file, data);
     return { slug: path.basename(file, ".json"), data };
   });
 
@@ -105,7 +142,7 @@ export function getAllSeries(): Series[] {
         years: data.years,
         tint: data.tint,
         statement: data.statement,
-        cover: plates[(data.cover ?? 1) - 1] ?? plates[0],
+        cover: plates[(data.cover ?? 1) - 1],
         plates,
       };
     });
