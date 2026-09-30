@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vendored design reference, not application source. The handoff's
+    // support.js and image-slot.js are prototype runtime never ported in.
+    "design_handoff_alan_gravell_site/**",
   ]),
 ]);
 
