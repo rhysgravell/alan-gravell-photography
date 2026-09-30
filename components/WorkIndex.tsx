@@ -3,13 +3,19 @@
 import Link from "next/link";
 import { useState } from "react";
 import Photo from "@/components/Photo";
-import { tintBg } from "@/lib/format";
-import type { Series } from "@/lib/series";
+import type { Series, Tint } from "@/lib/series";
 
-// The index of series. One row is always the current one: it takes its
-// series' tint, the others fade to 35%, and the sticky preview beside the
-// list shows its cover. Hover or keyboard focus moves it; it starts on the
-// first series.
+// While the list is hovered or has keyboard focus, the current row takes its
+// series' tint and the others fade to 35%. At rest every row is at full
+// strength, so the list stays readable on touch screens, which never hover.
+// The sticky preview shows the current row's cover; it starts on the first.
+const currentTint: Record<Tint, string> = {
+  sky: "group-hover/list:bg-tint-sky group-focus-within/list:bg-tint-sky",
+  sage: "group-hover/list:bg-tint-sage group-focus-within/list:bg-tint-sage",
+  sand: "group-hover/list:bg-tint-sand group-focus-within/list:bg-tint-sand",
+  mist: "group-hover/list:bg-tint-mist group-focus-within/list:bg-tint-mist",
+};
+const dimmed = "group-hover/list:opacity-35 group-focus-within/list:opacity-35";
 export default function WorkIndex({ series }: { series: Series[] }) {
   const [current, setCurrent] = useState(0);
   const preview = series[current];
@@ -23,7 +29,7 @@ export default function WorkIndex({ series }: { series: Series[] }) {
         >
           Index of series
         </h1>
-        <ul>
+        <ul className="group/list">
           {series.map((s, i) => (
             <li key={s.slug}>
               <Link
@@ -31,7 +37,7 @@ export default function WorkIndex({ series }: { series: Series[] }) {
                 onMouseEnter={() => setCurrent(i)}
                 onFocus={() => setCurrent(i)}
                 className={`-mx-4 grid grid-cols-[48px_minmax(0,1fr)_auto] items-baseline gap-5 border-b border-line px-4 py-7 transition-[opacity,background-color] duration-400 ease-(--ease-gallery) ${
-                  i === current ? tintBg[s.tint] : "opacity-35"
+                  i === current ? currentTint[s.tint] : dimmed
                 }`}
               >
                 <span className="type-label text-secondary">{s.roman}</span>

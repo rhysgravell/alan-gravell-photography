@@ -4,7 +4,8 @@ import { site } from "@/content/site";
 export default function SiteFooter() {
   return (
     <footer className="flex flex-wrap justify-between gap-4 border-t border-line pt-7 pb-10 type-label text-secondary">
-      <span>© 2026 {site.name}</span>
+      {/* The year of the build; the site is static, so it moves on at each deploy. */}
+      <span>© {new Date().getFullYear()} {site.name}</span>
       <div className="flex gap-7">
         {site.instagram ? (
           <a href={site.instagram} className="hover:text-primary">

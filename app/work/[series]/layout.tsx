@@ -72,6 +72,7 @@ export default async function SeriesLayout({
                   scroll={false}
                   className="cursor-zoom-in"
                   aria-label={`View ${plate.title} larger`}
+                  data-plate={plate.no}
                 >
                   <Photo
                     image={plate.image}

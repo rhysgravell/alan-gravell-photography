@@ -58,6 +58,11 @@ export default function ContactForm() {
       <fieldset className="flex flex-col gap-3">
         <legend className="mb-3 type-label text-secondary">Regarding</legend>
         <input type="hidden" name="regarding" value={topic} />
+        <input
+          type="hidden"
+          name="_subject"
+          value={`${topic} enquiry — ${site.name}`}
+        />
         <div className="flex flex-wrap gap-2">
           {topics.map((t) => (
             <button
@@ -98,6 +103,17 @@ export default function ContactForm() {
           className={`${fieldClass} resize-y placeholder:text-quiet`}
         />
       </label>
+
+      {/* Honeypot: hidden from people, filled in by bots. Formspree drops any
+          submission where _gotcha has a value. */}
+      <input
+        type="text"
+        name="_gotcha"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden
+        className="hidden"
+      />
 
       {status === "error" && (
         <p role="alert" className="type-body-s text-secondary">
