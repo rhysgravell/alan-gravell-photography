@@ -1,69 +1,77 @@
-import Image from "next/image";
+import Link from "next/link";
+import Photo from "@/components/Photo";
+import { site } from "@/content/site";
+import { plateHref, plateNo, ratioLabel } from "@/lib/format";
+import { getAllSeries, getSeries } from "@/lib/series";
 
 export default function Home() {
+  const series = getAllSeries();
+  const featuredSeries = getSeries(site.featured.series) ?? series[0];
+  const featured =
+    featuredSeries.plates[site.featured.plate - 1] ?? featuredSeries.plates[0];
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="pt-36 pb-24">
+      {/* Featured photograph, hung right of centre with its wall label. */}
+      <section className="flex flex-wrap items-end gap-x-12 gap-y-8">
+        <Link
+          href={plateHref(featuredSeries.slug, featured)}
+          className="ml-auto max-w-[980px] flex-[1_1_520px] cursor-zoom-in"
+        >
+          <Photo
+            image={featured.image}
+            width={featured.width}
+            height={featured.height}
+            alt={`${featured.title}, from the series ${featuredSeries.title}`}
+            placeholder={`Featured photograph · ${ratioLabel(featured.width, featured.height)}`}
+            priority
+          />
+        </Link>
+        <div className="flex flex-[0_1_220px] flex-col gap-1.5 border-t border-line pt-3">
+          <span className="type-label">No. {plateNo(featured.no)}</span>
+          <span className="type-display-s">{featured.title}</span>
+          <span className="type-label text-secondary">
+            {featured.year} · {featured.medium}
+          </span>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* Quote band: full bleed, sky tint. */}
+      <section className="bleed mt-36 grid grid-cols-[repeat(auto-fit,minmax(min(100%,320px),1fr))] gap-12 bg-tint-sky py-24">
+        <h2 className="type-label text-secondary">{site.home.label}</h2>
+        <p className="max-w-[22em] type-quote text-pretty">{site.home.quote}</p>
+      </section>
+
+      <section className="mt-36" aria-labelledby="series-heading">
+        <div className="flex items-baseline justify-between border-b border-line pb-3.5 type-label text-secondary">
+          <h2 id="series-heading">Series</h2>
+          <Link href="/work" className="link pb-0.5 text-primary">
+            All work →
+          </Link>
         </div>
-      </main>
+        <ul className="mt-12 grid grid-cols-[repeat(auto-fit,minmax(min(100%,260px),1fr))] gap-x-8 gap-y-12">
+          {series.map((s) => (
+            <li key={s.slug}>
+              <Link href={`/work/${s.slug}`} className="group flex flex-col gap-3.5">
+                <Photo
+                  image={s.cover.image}
+                  width={s.cover.width}
+                  height={s.cover.height}
+                  frame="4 / 5"
+                  alt={`${s.cover.title}, cover of the series ${s.title}`}
+                  placeholder="Series cover · 4:5"
+                />
+                <span className="flex items-baseline justify-between gap-3">
+                  <span className="type-display-s transition-colors duration-(--dur-quick) group-hover:text-accent">
+                    {s.title}
+                  </span>
+                  <span className="type-label text-secondary">{s.roman}</span>
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
     </div>
   );
 }
