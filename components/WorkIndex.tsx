@@ -21,7 +21,7 @@ export default function WorkIndex({ series }: { series: Series[] }) {
   const preview = series[current];
 
   return (
-    <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,420px),1fr))] items-start gap-16 py-24">
+    <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,420px),1fr))] items-start gap-16 pt-16 pb-24">
       <section aria-labelledby="index-heading">
         <h1
           id="index-heading"
