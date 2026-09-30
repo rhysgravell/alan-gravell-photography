@@ -3,7 +3,8 @@
   "title": "Salt Roads",
   "years": "1986–1999",
   "tint": "mist",
-  "statement": "Early work. Black-and-white roads across the marshes, made from the driver’s seat on long evening drives.",
+  "statement": "Early work. Roads across the marshes in black and white, made from the driver’s seat on long evening drives.",
+  "note": "I was always driving somewhere else. These are the places I stopped instead.",
   "cover": 1,
   "plates": [
     {
@@ -15,12 +16,24 @@
     {
       "title": "Telegraph line",
       "year": "1990",
-      "width": 3200,
+      "width": 2400,
+      "height": 3000
+    },
+    {
+      "title": "Sluice gate",
+      "year": "1992",
+      "width": 2400,
+      "height": 3000
+    },
+    {
+      "title": "Flat country",
+      "year": "1995",
+      "width": 4200,
       "height": 1800
     },
     {
       "title": "Turning place",
-      "year": "1995",
+      "year": "1999",
       "width": 3000,
       "height": 2000
     }

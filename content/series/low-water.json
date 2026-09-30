@@ -4,6 +4,7 @@
   "years": "2016–2021",
   "tint": "sky",
   "statement": "Made over five winters along the estuary, always at low tide, when the water withdraws and the mud holds the sky for an hour or two.",
+  "note": "The tide gives you about an hour. After that the picture belongs to the sea again.",
   "cover": 1,
   "plates": [
     {
@@ -19,16 +20,34 @@
       "height": 3000
     },
     {
+      "title": "Samphire",
+      "year": "2017",
+      "width": 2400,
+      "height": 3000
+    },
+    {
       "title": "Mud and cloud",
       "year": "2018",
-      "width": 3000,
-      "height": 2000
+      "width": 4200,
+      "height": 1800
     },
     {
       "title": "The far bank",
       "year": "2019",
       "width": 2400,
       "height": 2400
+    },
+    {
+      "title": "Wreck, ebb",
+      "year": "2020",
+      "width": 2000,
+      "height": 3000
+    },
+    {
+      "title": "Heron line",
+      "year": "2020",
+      "width": 2400,
+      "height": 3200
     },
     {
       "title": "Returning tide",
