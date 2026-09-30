@@ -94,6 +94,9 @@
 @layer base {
   html {
     background: var(--surface-page);
+    /* Reserve the scrollbar's width so the page does not shift sideways when
+       the lightbox locks scrolling. */
+    scrollbar-gutter: stable;
   }
 
   body {

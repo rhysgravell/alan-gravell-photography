@@ -25,6 +25,8 @@ export default function Lightbox({ series, plate }: LightboxProps) {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      // Leave browser shortcuts alone: Alt+← is Back, Cmd+← is Back on Mac.
+      if (e.altKey || e.metaKey || e.ctrlKey) return;
       if (e.key === "Escape") router.push(seriesHref, { scroll: false });
       if (e.key === "ArrowLeft")
         router.replace(plateHref(series.slug, prev), { scroll: false });
@@ -36,13 +38,24 @@ export default function Lightbox({ series, plate }: LightboxProps) {
     return () => window.removeEventListener("keydown", onKey);
   }, [router, series.slug, seriesHref, prev, next]);
 
-  // Hold the page still behind the lightbox, and move focus into it.
+  // The plate on screen, for handing focus back when the lightbox closes.
+  const shown = useRef(plate.no);
+  useEffect(() => {
+    shown.current = plate.no;
+  }, [plate.no]);
+
+  // Hold the page still behind the lightbox and move focus into it. On close,
+  // return focus to the plate's link in the series, so keyboard users land
+  // where they left off rather than at the top of the document.
   useEffect(() => {
     const { overflow } = document.body.style;
     document.body.style.overflow = "hidden";
     dialog.current?.focus();
     return () => {
       document.body.style.overflow = overflow;
+      document
+        .querySelector<HTMLElement>(`[data-plate="${shown.current}"]`)
+        ?.focus({ preventScroll: true });
     };
   }, []);
 
