@@ -16,6 +16,11 @@ type PhotoProps = {
    * and sits on the frame's bottom edge like a print on a wall.
    */
   frame?: string;
+  /**
+   * Fill a positioned parent edge to edge instead, cropping to cover it. Only
+   * for the Home slideshow; everywhere else the photograph is never cropped.
+   */
+  fill?: boolean;
   /** Load eagerly: the first photograph a page shows. */
   priority?: boolean;
   className?: string;
@@ -31,6 +36,7 @@ export default function Photo({
   alt,
   placeholder,
   frame,
+  fill = false,
   priority = false,
   className = "",
   style,
@@ -46,8 +52,11 @@ export default function Photo({
 
   return (
     <div
-      className={`relative ${loaded ? "" : "bg-plate"} ${className}`}
-      style={{ aspectRatio: frame ?? `${width} / ${height}`, ...style }}
+      className={`${fill ? "absolute inset-0" : "relative"} ${loaded ? "" : "bg-plate"} ${className}`}
+      style={{
+        aspectRatio: fill ? undefined : (frame ?? `${width} / ${height}`),
+        ...style,
+      }}
     >
       {image ? (
         // eslint-disable-next-line @next/next/no-img-element -- static export; see README on image sizes
@@ -61,7 +70,7 @@ export default function Photo({
           fetchPriority={priority ? "high" : undefined}
           decoding="async"
           onLoad={() => setLoaded(true)}
-          className={`absolute inset-0 size-full object-contain object-bottom transition-opacity duration-(--dur-fade) ease-(--ease-gallery) ${
+          className={`absolute inset-0 size-full ${fill ? "object-cover" : "object-contain object-bottom"} transition-opacity duration-(--dur-fade) ease-(--ease-gallery) ${
             loaded ? "opacity-100" : "opacity-0"
           }`}
         />
