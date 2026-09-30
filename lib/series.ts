@@ -36,6 +36,8 @@ export type Series = {
   years: string;
   tint: Tint;
   statement: string;
+  /** A line in the photographer's voice, set as a quote between the plates. */
+  note?: string;
   /** The plate used as the series cover on Home and the Work index. */
   cover: Plate;
   plates: Plate[];
@@ -47,6 +49,7 @@ type SeriesFile = {
   years: string;
   tint: Tint;
   statement: string;
+  note?: string;
   /** Plate number to use as the cover. Defaults to the first plate. */
   cover?: number;
   plates: (Omit<Plate, "no" | "medium" | "edition"> &
@@ -90,6 +93,8 @@ function validate(file: string, data: SeriesFile): void {
   for (const key of ["title", "years", "statement"] as const)
     if (typeof data[key] !== "string" || !data[key])
       fail(`"${key}" must be a non-empty string`);
+  if (data.note !== undefined && (typeof data.note !== "string" || !data.note))
+    fail('"note" must be a non-empty string, or left out');
   if (!TINTS.includes(data.tint))
     fail(`"tint" must be one of ${TINTS.join(", ")}`);
   if (!Array.isArray(data.plates) || data.plates.length === 0)
@@ -156,6 +161,7 @@ export function getAllSeries(): Series[] {
         years: data.years,
         tint: data.tint,
         statement: data.statement,
+        note: data.note,
         cover: plates[(data.cover ?? 1) - 1],
         plates,
       };

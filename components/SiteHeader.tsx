@@ -17,7 +17,7 @@ export default function SiteHeader() {
   const pathname = usePathname();
 
   return (
-    <header className="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-4 pt-10">
+    <header className="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-4 pt-9 pb-8">
       <Link
         href="/"
         className="font-serif text-[26px] leading-none font-normal tracking-[0.01em]"

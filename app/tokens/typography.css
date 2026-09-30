@@ -1,6 +1,6 @@
 :root {
   /* Families come from next/font (see app/layout.tsx), which self-hosts the
-     Google Fonts the handoff loaded from fonts.css. */
+     Google Fonts the design system loads from fonts.css. */
   --font-display: var(--font-cormorant), Garamond, "Times New Roman", serif;
   --font-body: var(--font-hanken), "Helvetica Neue", Helvetica, sans-serif;
   --font-label: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, monospace;

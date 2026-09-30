@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Design tokens, copied from the handoff's tokens/ folder. typography.css is
+/* Design tokens, copied from the design system's tokens/ folder. typography.css is
    the one edit: its families point at next/font instead of Google's CDN. */
 @import "./tokens/colors.css";
 @import "./tokens/typography.css";
@@ -116,7 +116,7 @@
   }
 }
 
-/* Motion is fades only. Pages and images fade in over --dur-fade. */
+/* Pages and images fade in over --dur-fade. */
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -125,6 +125,22 @@
 
 .fade-in {
   animation: fade-in var(--dur-fade) var(--ease-gallery);
+}
+
+/* Scroll reveal: blocks rise 24px and fade in as they enter the viewport
+   (components/Reveal.tsx). Hidden only when scripts run, so the page reads
+   in full without them, and never under reduced motion. */
+[data-reveal] {
+  transition:
+    opacity var(--dur-slow) var(--ease-gallery),
+    transform var(--dur-slow) var(--ease-gallery);
+}
+
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-reveal]:not([data-shown]) {
+    opacity: 0;
+    transform: translateY(24px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

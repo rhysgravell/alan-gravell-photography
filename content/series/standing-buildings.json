@@ -4,6 +4,7 @@
   "years": "2001–2008",
   "tint": "sand",
   "statement": "Barns, chapels and farmhouses at the edge of use, photographed in flat morning light as the land slowly takes them back.",
+  "note": "A building left alone starts to look like the ground it stands on.",
   "cover": 1,
   "plates": [
     {
@@ -19,16 +20,28 @@
       "height": 3000
     },
     {
+      "title": "Byre door",
+      "year": "2004",
+      "width": 2400,
+      "height": 3000
+    },
+    {
       "title": "Farmhouse in rain",
       "year": "2005",
-      "width": 3000,
-      "height": 2000
+      "width": 4200,
+      "height": 1800
     },
     {
       "title": "Doorway",
       "year": "2008",
       "width": 2400,
       "height": 3000
+    },
+    {
+      "title": "Roofline",
+      "year": "2008",
+      "width": 3000,
+      "height": 2000
     }
   ]
 }

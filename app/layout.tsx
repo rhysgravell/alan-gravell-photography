@@ -5,7 +5,7 @@ import SiteFooter from "@/components/SiteFooter";
 import { site } from "@/content/site";
 import "./globals.css";
 
-// The three Google families the handoff's tokens/fonts.css loaded, self-hosted
+// The three Google families the design system's tokens/fonts.css loads, self-hosted
 // through next/font. app/tokens/typography.css reads these variables.
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",

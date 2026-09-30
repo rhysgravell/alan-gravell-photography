@@ -8,7 +8,7 @@ export default function AboutPage() {
   const { portrait, bio, exhibitions } = site.about;
 
   return (
-    <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,380px),1fr))] items-start gap-16 py-24">
+    <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,380px),1fr))] items-start gap-16 pt-16 pb-24">
       <figure className="flex max-w-[520px] flex-col gap-3.5">
         <Photo
           image={portrait.image}
