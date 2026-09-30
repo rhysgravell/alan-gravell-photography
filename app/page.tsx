@@ -6,12 +6,21 @@ import { getAllSeries, getSeries } from "@/lib/series";
 
 export default function Home() {
   const series = getAllSeries();
-  const featuredSeries = getSeries(site.featured.series) ?? series[0];
-  const featured =
-    featuredSeries.plates[site.featured.plate - 1] ?? featuredSeries.plates[0];
+  // A typo here would otherwise hang the wrong photograph without a word.
+  const featuredSeries = getSeries(site.featured.series);
+  const featured = featuredSeries?.plates[site.featured.plate - 1];
+  if (!featuredSeries || !featured)
+    throw new Error(
+      `content/site.ts: featured plate ${site.featured.plate} of "${site.featured.series}" does not exist`,
+    );
 
   return (
     <div className="pt-36 pb-24">
+      {/* The page's heading for screen readers; sighted visitors have the
+          name in the header and the photograph speaks for itself. */}
+      <h1 className="sr-only">
+        {site.name}: {site.home.label.toLowerCase()}
+      </h1>
       {/* Featured photograph, hung right of centre with its wall label. */}
       <section className="flex flex-wrap items-end gap-x-12 gap-y-8">
         <Link
