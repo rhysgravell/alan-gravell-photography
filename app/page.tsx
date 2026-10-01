@@ -71,6 +71,7 @@ export default function Home() {
                     width={s.cover.width}
                     height={s.cover.height}
                     frame="3 / 2"
+                    sizes="(min-width: 1440px) 860px, (min-width: 960px) 60vw, 100vw"
                     alt={`${s.cover.title}, from the series ${s.title}`}
                     placeholder="Series cover · landscape 3:2"
                     className="flex-[1_1_560px]"

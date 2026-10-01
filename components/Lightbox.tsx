@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
-import Photo from "@/components/Photo";
+import Photo, { PreloadPhoto } from "@/components/Photo";
 import { plateHref, plateMeta, plateNo } from "@/lib/format";
 import type { Plate, Series } from "@/lib/series";
 
@@ -37,12 +37,6 @@ export default function Lightbox({ series, plate }: LightboxProps) {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [router, series.slug, seriesHref, prev, next]);
-
-  // Fetch the neighbours ahead of time, so stepping shows the next
-  // photograph at once rather than an empty mat while it downloads.
-  useEffect(() => {
-    for (const p of [prev, next]) if (p.image) new Image().src = p.image;
-  }, [prev, next]);
 
   // The plate on screen, for handing focus back when the lightbox closes.
   const shown = useRef(plate.no);
@@ -107,9 +101,19 @@ export default function Lightbox({ series, plate }: LightboxProps) {
             height={plate.height}
             alt={`${plate.title}, ${plate.year}`}
             placeholder={`${series.title} · No. ${plateNo(plate.no)}`}
+            sizes={lightboxSizes(plate)}
             priority
             style={{ width: `min(100cqw, ${ratio} * 100cqh)` }}
           />
+          {/* Fetch the neighbours ahead of time, so stepping shows the next
+              photograph at once rather than an empty mat. */}
+          {[...new Set([prev, next])].map(
+            (p) =>
+              p !== plate &&
+              p.image && (
+                <PreloadPhoto key={p.no} image={p.image} sizes={lightboxSizes(p)} />
+              ),
+          )}
         </div>
       </div>
 
@@ -141,6 +145,12 @@ export default function Lightbox({ series, plate }: LightboxProps) {
       </div>
     </div>
   );
+}
+
+/** The photograph fills the height when the window is wider than it, in
+ * proportion, and the width otherwise. */
+function lightboxSizes({ width, height }: Plate): string {
+  return `(min-aspect-ratio: ${width}/${height}) ${Math.round((width / height) * 100)}vh, 100vw`;
 }
 
 /** Keep Tab and Shift+Tab cycling through the lightbox's own controls. */

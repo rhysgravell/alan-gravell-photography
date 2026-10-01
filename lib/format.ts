@@ -1,5 +1,24 @@
 import type { Plate, Tint } from "@/lib/series";
 
+/** A photograph's responsive sizes, as listed by scripts/images.mjs. Each
+ * width w is served at `${src}-${w}.avif` and `${src}-${w}.webp`. */
+export type ImageSet = {
+  src: string;
+  width: number;
+  height: number;
+  widths: number[];
+};
+
+/** The srcset for one format: "/img/a-800.avif 800w, /img/a-1600.avif 1600w". */
+export function srcSet(image: ImageSet, format: "avif" | "webp"): string {
+  return image.widths.map((w) => `${image.src}-${w}.${format} ${w}w`).join(", ");
+}
+
+/** The `sizes` for a photograph hung at most maxWidth pixels wide. */
+export function upTo(maxWidth: number): string {
+  return `(min-width: ${maxWidth}px) ${maxWidth}px, 100vw`;
+}
+
 // Display helpers shared by server and client components. Kept apart from
 // lib/series.ts, which reads the filesystem and so cannot reach the client.
 

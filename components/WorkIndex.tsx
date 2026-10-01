@@ -59,6 +59,7 @@ export default function WorkIndex({ series }: { series: Series[] }) {
           width={preview.cover.width}
           height={preview.cover.height}
           frame="4 / 5"
+          sizes="(min-width: 1440px) 620px, (min-width: 1000px) 45vw, 100vw"
           alt={`${preview.cover.title}, cover of the series ${preview.title}`}
           placeholder="Series cover · 4:5"
           className="fade-in"

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Photo from "@/components/Photo";
-import { plateHref, plateNo, ratioLabel, tintBg } from "@/lib/format";
+import { plateHref, plateNo, ratioLabel, tintBg, upTo } from "@/lib/format";
 import Reveal from "@/components/Reveal";
 import {
   getAllSeries,
@@ -108,7 +108,12 @@ export default async function SeriesLayout({
                   className={block.align}
                   style={{ width: `min(100%, ${block.width}px)` }}
                 >
-                  <HungPlate series={series} plate={block.plate} priority={i === 0} />
+                  <HungPlate
+                    series={series}
+                    plate={block.plate}
+                    sizes={upTo(block.width)}
+                    priority={i === 0}
+                  />
                 </div>
               </div>
             )}
@@ -117,13 +122,23 @@ export default async function SeriesLayout({
                 className={`bleed grid grid-cols-[repeat(auto-fit,minmax(min(100%,300px),1fr))] items-end gap-12 py-24 ${tintBg[series.tint]}`}
               >
                 {block.plates.map((plate) => (
-                  <HungPlate key={plate.no} series={series} plate={plate} />
+                  <HungPlate
+                    key={plate.no}
+                    series={series}
+                    plate={plate}
+                    sizes="(min-width: 1440px) 650px, (min-width: 720px) 50vw, 100vw"
+                  />
                 ))}
               </div>
             )}
             {block.kind === "full" && (
               <div className="-mx-(--page-gutter)">
-                <HungPlate series={series} plate={block.plate} full />
+                <HungPlate
+                  series={series}
+                  plate={block.plate}
+                  sizes={upTo(1440)}
+                  full
+                />
               </div>
             )}
             {block.kind === "quote" && (
@@ -160,11 +175,13 @@ export default async function SeriesLayout({
 function HungPlate({
   series,
   plate,
+  sizes,
   full = false,
   priority = false,
 }: {
   series: Series;
   plate: Plate;
+  sizes: string;
   full?: boolean;
   priority?: boolean;
 }) {
@@ -183,6 +200,7 @@ function HungPlate({
           height={plate.height}
           alt={`${plate.title}, ${plate.year}`}
           placeholder={`${series.title} · No. ${plateNo(plate.no)} · ${ratioLabel(plate.width, plate.height)}`}
+          sizes={sizes}
           priority={priority}
           className={full ? "max-h-[92vh]" : ""}
         />
