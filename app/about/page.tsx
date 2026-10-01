@@ -1,19 +1,25 @@
 import type { Metadata } from "next";
 import Photo from "@/components/Photo";
 import { site } from "@/content/site";
+import { upTo } from "@/lib/format";
+import { getImage } from "@/lib/images";
 
 export const metadata: Metadata = { title: "About" };
 
 export default function AboutPage() {
   const { portrait, bio, exhibitions } = site.about;
+  const image = portrait.image
+    ? getImage(portrait.image, "content/site.ts about.portrait")
+    : undefined;
 
   return (
     <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,380px),1fr))] items-start gap-16 pt-16 pb-24">
       <figure className="flex max-w-[520px] flex-col gap-3.5">
         <Photo
-          image={portrait.image}
-          width={portrait.width}
-          height={portrait.height}
+          image={image}
+          width={image?.width ?? portrait.width}
+          height={image?.height ?? portrait.height}
+          sizes={upTo(520)}
           alt={`Portrait of ${site.name}`}
           placeholder="Portrait of the photographer · 4:5"
           priority

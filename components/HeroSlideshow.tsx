@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Photo from "@/components/Photo";
+import { type ImageSet, upTo } from "@/lib/format";
 
 export type Slide = {
   href: string;
-  image?: string;
+  image?: ImageSet;
   width: number;
   height: number;
   title: string;
@@ -81,6 +82,7 @@ export default function HeroSlideshow({ slides }: { slides: Slide[] }) {
               width={s.width}
               height={s.height}
               alt=""
+              sizes={upTo(1440)}
               placeholder={`Home slideshow ${i + 1} · wide landscape photograph`}
               priority={i === 0}
             />

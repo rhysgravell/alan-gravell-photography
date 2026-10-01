@@ -30,6 +30,8 @@ export const site = {
 
   about: {
     portrait: {
+      /** Path under photos/, e.g. "about/portrait.jpg". The width and
+       * height shape the placeholder until there is one. */
       image: undefined as string | undefined,
       width: 2400,
       height: 3000,

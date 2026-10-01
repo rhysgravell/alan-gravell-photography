@@ -1,5 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
+import type { ImageSet } from "@/lib/format";
+import { getImage } from "@/lib/images";
 
 // Series live as one JSON file each in content/series/, named by slug, so new
 // work is added by dropping in a file. They are read at build time only: the
@@ -13,11 +15,11 @@ export type Plate = {
   no: number;
   title: string;
   year: string;
-  /** Path under /public, e.g. "/photos/low-water/01.jpg". Absent until the
-   * client supplies the photograph; a placeholder is shown instead. */
-  image?: string;
+  /** The photograph's responsive sizes. Absent until the client supplies
+   * it; a placeholder is shown instead. */
+  image?: ImageSet;
   /** Pixel size of the photograph. Sets the aspect ratio, which is never
-   * cropped, so it is required even before the image arrives. */
+   * cropped. Taken from the photograph itself once there is one. */
   width: number;
   height: number;
   medium: string;
@@ -52,12 +54,14 @@ type SeriesFile = {
   note?: string;
   /** Plate number to use as the cover. Defaults to the first plate. */
   cover?: number;
-  plates: (Omit<Plate, "no" | "medium" | "edition"> &
-    Partial<Pick<Plate, "medium" | "edition">>)[];
+  plates: (Omit<Plate, "no" | "image" | "width" | "height" | "medium" | "edition"> &
+    Partial<Pick<Plate, "width" | "height" | "medium" | "edition">> & {
+      /** Path under photos/, e.g. "low-water/01.jpg". */
+      image?: string;
+    })[];
 };
 
 const SERIES_DIR = path.join(process.cwd(), "content/series");
-const PUBLIC_DIR = path.join(process.cwd(), "public");
 
 const DEFAULT_MEDIUM = "Archival pigment print";
 const DEFAULT_EDITION = "7 + 2 AP";
@@ -103,10 +107,11 @@ function validate(file: string, data: SeriesFile): void {
     const at = `plate ${i + 1}`;
     if (!plate.title) fail(`${at} needs a "title"`);
     if (!plate.year) fail(`${at} needs a "year"`);
-    if (!(plate.width > 0 && plate.height > 0))
-      fail(`${at} needs a positive "width" and "height" in pixels`);
-    if (plate.image && !fs.existsSync(path.join(PUBLIC_DIR, plate.image)))
-      fail(`${at} "image" ${plate.image} is not in public/`);
+    if (plate.image !== undefined && typeof plate.image !== "string")
+      fail(`${at} "image" must be a path under photos/`);
+    // Without a photograph, the size is what shapes its placeholder.
+    if (!plate.image && !(Number(plate.width) > 0 && Number(plate.height) > 0))
+      fail(`${at} needs an "image", or a positive "width" and "height" in pixels`);
   });
   if (
     data.cover !== undefined &&
@@ -147,12 +152,20 @@ export function getAllSeries(): Series[] {
   cache = raw
     .sort((a, b) => a.data.order - b.data.order)
     .map(({ slug, data }, index) => {
-      const plates: Plate[] = data.plates.map((plate, i) => ({
-        ...plate,
-        no: i + 1,
-        medium: plate.medium ?? DEFAULT_MEDIUM,
-        edition: plate.edition ?? DEFAULT_EDITION,
-      }));
+      const plates: Plate[] = data.plates.map((plate, i) => {
+        const image = plate.image
+          ? getImage(plate.image, `content/series/${slug}.json plate ${i + 1}`)
+          : undefined;
+        return {
+          ...plate,
+          image,
+          width: image?.width ?? plate.width!,
+          height: image?.height ?? plate.height!,
+          no: i + 1,
+          medium: plate.medium ?? DEFAULT_MEDIUM,
+          edition: plate.edition ?? DEFAULT_EDITION,
+        };
+      });
       return {
         slug,
         roman: toRoman(index + 1),
