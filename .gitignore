@@ -27,6 +27,10 @@ out/
 .astro/
 .vercel/
 
+# Responsive images, generated from photos/ by scripts/images.mjs
+public/img/
+.images.json
+
 # Next.js / TypeScript
 next-env.d.ts
 *.tsbuildinfo
