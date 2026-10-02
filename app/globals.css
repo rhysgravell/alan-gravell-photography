@@ -143,6 +143,14 @@
   }
 }
 
+/* Photographs fade in once loaded (components/Photo.tsx), which takes
+   script. Without it, show them straight away. */
+@media (scripting: none) {
+  picture > img {
+    opacity: 1 !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

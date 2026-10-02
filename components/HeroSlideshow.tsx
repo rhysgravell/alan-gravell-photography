@@ -63,7 +63,13 @@ export default function HeroSlideshow({ slides }: { slides: Slide[] }) {
         if (!e.currentTarget.contains(e.relatedTarget)) setHeld(false);
       }}
     >
-      <div className="relative h-[min(80vh,860px)] min-h-[420px] bg-plate">
+      {/* Up to 80vh, 860px at most, on wide screens. On narrow ones the
+          frame keeps to a 3:2 landscape shape, as a frame taller than it is
+          wide would crop most of a landscape away. */}
+      <div
+        className="relative bg-plate"
+        style={{ height: "clamp(260px, 66.67vw, min(80vh, 860px))" }}
+      >
         {slides.map((s, i) => (
           <Link
             key={s.href}
