@@ -1,10 +1,23 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import HeroSlideshow, { type Slide } from "@/components/HeroSlideshow";
 import Photo from "@/components/Photo";
 import Reveal from "@/components/Reveal";
 import { site } from "@/content/site";
 import { plateHref, tintBg } from "@/lib/format";
+import { pageMetadata } from "@/lib/metadata";
 import { getAllSeries, getSeries } from "@/lib/series";
+
+// The first slide stands for the site in link previews.
+export function generateMetadata(): Metadata {
+  const first = site.home.slides[0];
+  const plate = getSeries(first.series)?.plates[first.plate - 1];
+  return pageMetadata({
+    path: "/",
+    image: plate?.image,
+    imageAlt: plate && `${plate.title}, ${plate.year}`,
+  });
+}
 
 export default function Home() {
   const series = getAllSeries();

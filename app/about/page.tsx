@@ -3,14 +3,28 @@ import Photo from "@/components/Photo";
 import { site } from "@/content/site";
 import { upTo } from "@/lib/format";
 import { getImage } from "@/lib/images";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = { title: "About" };
+function portraitImage() {
+  const { portrait } = site.about;
+  return portrait.image
+    ? getImage(portrait.image, "content/site.ts about.portrait")
+    : undefined;
+}
+
+export function generateMetadata(): Metadata {
+  return pageMetadata({
+    title: "About",
+    description: site.about.bio[0],
+    path: "/about/",
+    image: portraitImage(),
+    imageAlt: `Portrait of ${site.name}`,
+  });
+}
 
 export default function AboutPage() {
   const { portrait, bio, exhibitions } = site.about;
-  const image = portrait.image
-    ? getImage(portrait.image, "content/site.ts about.portrait")
-    : undefined;
+  const image = portraitImage();
 
   return (
     <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,380px),1fr))] items-start gap-16 pt-16 pb-24">

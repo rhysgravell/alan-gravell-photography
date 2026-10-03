@@ -46,6 +46,12 @@ A plate's `width` and `height` come from its photograph, so they can be left out
 
 The About portrait works the same way, through `about.portrait.image` in `content/site.ts`.
 
+## Search and link previews
+
+Every page has a title and description, and an Open Graph preview card (title, description and photograph) for links shared on social sites and in messages. Home uses the first slideshow photograph, a series its cover, a plate itself, and About the portrait. `npm run images` makes a 1200px JPEG of each photograph for these cards.
+
+Set `NEXT_PUBLIC_SITE_URL` (see `.env.example`) to the live address once the domain is decided. Until then there are no full addresses to give, so canonical links, preview images and the entries in `sitemap.xml` are left out, and `robots.txt` doesn't name the sitemap.
+
 ## Contact form
 
 The site is static, so enquiries post to a hosted form service. Copy `.env.example` to `.env.local` and set `NEXT_PUBLIC_CONTACT_ENDPOINT` to a Formspree form URL (or any endpoint that accepts a form POST and returns 2xx). Without it, the form shows an error asking the visitor to email instead.
