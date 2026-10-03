@@ -1,6 +1,6 @@
 // Builds the responsive images. Every original in photos/ is resized to
 // 800, 1600 and 2400 pixels wide (never wider than the original) in AVIF and
-// WebP, written to public/img/, and listed with its true pixel size in
+// WebP, plus one 1200px JPEG for link previews, written to public/img/, and listed with its true pixel size in
 // .images.json, which lib/images.ts reads at build time.
 //
 // Runs before `dev` and `build`. Unchanged originals are skipped, and outputs
@@ -21,6 +21,8 @@ const FORMATS = {
   avif: (img) => img.avif({ quality: 62, effort: 4 }),
   webp: (img) => img.webp({ quality: 84 }),
 };
+// Link previews: social sites want a JPEG around 1200px wide.
+const PREVIEW_WIDTH = 1200;
 const ORIGINAL = /\.(jpe?g|png|tiff?|webp)$/i;
 
 /** Every file under dir, recursively; none if it doesn't exist. */
@@ -57,6 +59,20 @@ for (const src of (await files(SOURCE)).filter((f) => ORIGINAL.test(f))) {
   if (widths.length < WIDTHS.length) widths.push(width);
 
   const changed = await mtime(src);
+  const previewWidth = Math.min(PREVIEW_WIDTH, width);
+  const preview = path.join(OUTPUT, `${stem}-og.jpg`);
+  written.add(preview);
+  if ((await mtime(preview)) < changed) {
+    await fs.mkdir(path.dirname(preview), { recursive: true });
+    await sharp(src)
+      .autoOrient()
+      .resize({ width: previewWidth })
+      .withIccProfile("srgb")
+      .jpeg({ quality: 82, mozjpeg: true })
+      .toFile(preview);
+    made++;
+  }
+
   for (const w of widths) {
     for (const [format, encode] of Object.entries(FORMATS)) {
       const out = path.join(OUTPUT, `${stem}-${w}.${format}`);
@@ -72,7 +88,17 @@ for (const src of (await files(SOURCE)).filter((f) => ORIGINAL.test(f))) {
     }
   }
 
-  manifest[rel] = { src: `/img/${stem}`, width, height, widths };
+  manifest[rel] = {
+    src: `/img/${stem}`,
+    width,
+    height,
+    widths,
+    preview: {
+      src: `/img/${stem}-og.jpg`,
+      width: previewWidth,
+      height: Math.round((height * previewWidth) / width),
+    },
+  };
 }
 
 // Clear out sizes whose original was removed or renamed.

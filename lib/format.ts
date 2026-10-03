@@ -7,6 +7,8 @@ export type ImageSet = {
   width: number;
   height: number;
   widths: number[];
+  /** A JPEG for link previews on social sites. */
+  preview: { src: string; width: number; height: number };
 };
 
 /** The srcset for one format: "/img/a-800.avif 800w, /img/a-1600.avif 1600w". */
