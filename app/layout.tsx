@@ -3,6 +3,7 @@ import { Cormorant_Garamond, Hanken_Grotesk, IBM_Plex_Mono } from "next/font/goo
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { site } from "@/content/site";
+import { siteUrl } from "@/lib/metadata";
 import "./globals.css";
 
 // The three Google families the design system's tokens/fonts.css loads, self-hosted
@@ -29,7 +30,9 @@ const plexMono = IBM_Plex_Mono({
   display: "swap",
 });
 
+// Pages add their own description and link preview through pageMetadata().
 export const metadata: Metadata = {
+  metadataBase: siteUrl ? new URL(siteUrl) : undefined,
   title: { default: site.name, template: `%s — ${site.name}` },
   description: site.description,
 };

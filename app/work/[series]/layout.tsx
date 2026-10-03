@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Photo from "@/components/Photo";
 import { plateHref, plateNo, ratioLabel, tintBg, upTo } from "@/lib/format";
 import Reveal from "@/components/Reveal";
+import { pageMetadata } from "@/lib/metadata";
 import {
   getAllSeries,
   getNextSeries,
@@ -27,7 +28,15 @@ export async function generateMetadata({
   params,
 }: LayoutProps<"/work/[series]">): Promise<Metadata> {
   const series = getSeries((await params).series);
-  return series ? { title: series.title, description: series.statement } : {};
+  return series
+    ? pageMetadata({
+        title: series.title,
+        description: series.statement,
+        path: `/work/${series.slug}/`,
+        image: series.cover.image,
+        imageAlt: `${series.cover.title}, from the series ${series.title}`,
+      })
+    : {};
 }
 
 // The hang. Plates are laid out in a repeating rhythm of blocks: a single
