@@ -1,44 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState } from "react";
 import { site } from "@/content/site";
-
-// The site is a static export, so enquiries go to a hosted form service
-// (Formspree or similar) rather than an API route. Set its URL in
-// NEXT_PUBLIC_CONTACT_ENDPOINT; see .env.example.
-const ENDPOINT = process.env.NEXT_PUBLIC_CONTACT_ENDPOINT;
-
-type Status = "idle" | "sending" | "sent" | "error";
+import { sendEnquiry } from "./actions";
 
 const fieldClass =
   "border-0 border-b border-line-strong bg-transparent py-2.5 type-body-l outline-none transition-colors duration-(--dur-quick) focus:border-accent";
 
-export default function ContactForm() {
+export function EnquiryForm() {
   const { topics } = site.contact;
-  const [topic, setTopic] = useState(topics[0]);
-  const [status, setStatus] = useState<Status>("idle");
+  const [state, action, pending] = useActionState(sendEnquiry, null);
 
-  async function send(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (!ENDPOINT) {
-      console.warn("NEXT_PUBLIC_CONTACT_ENDPOINT is not set; enquiry not sent.");
-      setStatus("error");
-      return;
-    }
-    setStatus("sending");
-    try {
-      const res = await fetch(ENDPOINT, {
-        method: "POST",
-        body: new FormData(e.currentTarget),
-        headers: { Accept: "application/json" },
-      });
-      setStatus(res.ok ? "sent" : "error");
-    } catch {
-      setStatus("error");
-    }
-  }
-
-  if (status === "sent") {
+  if (state?.ok) {
     return (
       <div
         role="status"
@@ -53,36 +26,44 @@ export default function ContactForm() {
     );
   }
 
+  // React clears the form after each submission, so a failed one is refilled
+  // from what was sent.
+  const values = state?.values;
+
   return (
-    <form onSubmit={send} className="flex flex-col gap-8">
+    <form action={action} className="flex flex-col gap-8">
+      {/* Radios rather than buttons, so the topic is sent without JavaScript. */}
       <fieldset className="flex flex-col gap-3">
         <legend className="mb-3 type-label text-secondary">Regarding</legend>
-        <input type="hidden" name="regarding" value={topic} />
-        <input
-          type="hidden"
-          name="_subject"
-          value={`${topic} enquiry — ${site.name}`}
-        />
         <div className="flex flex-wrap gap-2">
           {topics.map((t) => (
-            <button
+            <label
               key={t}
-              type="button"
-              aria-pressed={topic === t}
-              onClick={() => setTopic(t)}
-              className={`cursor-pointer border border-line-strong px-4 py-2.5 type-label transition-colors duration-(--dur-quick) ${
-                topic === t ? "bg-primary text-page" : "bg-transparent text-primary"
-              }`}
+              className="cursor-pointer border border-line-strong bg-transparent px-4 py-2.5 type-label text-primary transition-colors duration-(--dur-quick) has-checked:bg-primary has-checked:text-page has-focus-visible:outline-2 has-focus-visible:outline-accent"
             >
+              <input
+                type="radio"
+                name="regarding"
+                value={t}
+                defaultChecked={t === (values?.regarding ?? topics[0])}
+                className="sr-only"
+              />
               {t}
-            </button>
+            </label>
           ))}
         </div>
       </fieldset>
 
       <label className="flex flex-col gap-1.5">
         <span className="type-label text-secondary">Name</span>
-        <input name="name" required autoComplete="name" className={fieldClass} />
+        <input
+          name="name"
+          required
+          maxLength={200}
+          autoComplete="name"
+          defaultValue={values?.name}
+          className={fieldClass}
+        />
       </label>
       <label className="flex flex-col gap-1.5">
         <span className="type-label text-secondary">Email</span>
@@ -90,7 +71,9 @@ export default function ContactForm() {
           name="email"
           type="email"
           required
+          maxLength={254}
           autoComplete="email"
+          defaultValue={values?.email}
           className={fieldClass}
         />
       </label>
@@ -99,25 +82,26 @@ export default function ContactForm() {
         <textarea
           name="message"
           rows={5}
+          maxLength={5000}
           placeholder="Which photograph, and anything else I should know"
+          defaultValue={values?.message}
           className={`${fieldClass} resize-y placeholder:text-quiet`}
         />
       </label>
 
-      {/* Honeypot: hidden from people, filled in by bots. Formspree drops any
-          submission where _gotcha has a value. */}
+      {/* Honeypot: hidden from people, filled in by bots. */}
       <input
         type="text"
-        name="_gotcha"
+        name="leave_blank"
         tabIndex={-1}
         autoComplete="off"
         aria-hidden
         className="hidden"
       />
 
-      {status === "error" && (
+      {state?.ok === false && (
         <p role="alert" className="type-body-s text-secondary">
-          Your enquiry could not be sent. Please try again, or write to{" "}
+          {state.error} Please try again, or write to{" "}
           <a href={`mailto:${site.email}`} className="link text-primary">
             {site.email}
           </a>
@@ -127,10 +111,10 @@ export default function ContactForm() {
 
       <button
         type="submit"
-        disabled={status === "sending"}
+        disabled={pending}
         className="cursor-pointer self-start border border-line-strong bg-primary px-7 py-4 type-label-l text-page transition-colors duration-(--dur-quick) hover:bg-transparent hover:text-primary disabled:cursor-wait"
       >
-        {status === "sending" ? "Sending…" : "Send enquiry"}
+        {pending ? "Sending…" : "Send enquiry"}
       </button>
     </form>
   );

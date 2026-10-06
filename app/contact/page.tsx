@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/metadata";
-import ContactForm from "@/components/ContactForm";
+import { EnquiryForm } from "./EnquiryForm";
 import { site } from "@/content/site";
 
 export const metadata: Metadata = pageMetadata({ title: "Contact", path: "/contact/" });
@@ -26,7 +26,7 @@ export default function ContactPage() {
           <span className="text-secondary">{site.contact.visits}</span>
         </div>
       </div>
-      <ContactForm />
+      <EnquiryForm />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { siteUrl } from "@/lib/metadata";
 
-// Written to out/robots.txt at build: everything may be indexed, and the
+// Generated at build: everything may be indexed, and the
 // sitemap is named once there is a domain for it.
 export const dynamic = "force-static";
 
