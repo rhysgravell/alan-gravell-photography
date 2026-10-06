@@ -6,7 +6,7 @@ Built from the design system in `Photography Website Design System/`: tokens and
 
 ## Stack
 
-Next.js (App Router) with a static export, Tailwind v4 and TypeScript. `npm run build` writes the whole site to `out/`, which can be hosted on any static host.
+Next.js (App Router), Tailwind v4 and TypeScript. Pages are generated at build time from `content/`, but the site runs as a Next.js server (`npm run build`, then `npm start`), so it needs a host that runs Node, such as Vercel, rather than a plain static host.
 
 ## Development
 
@@ -16,7 +16,7 @@ npm install
 npm run dev
 ```
 
-`npm run lint`, `npm run typecheck` and `npm run build` should all pass before a PR.
+`npm run lint`, `npm run typecheck`, `npm test` and `npm run build` should all pass before a PR. `npm run test:watch` reruns the tests as you edit.
 
 ## Pages
 
@@ -54,4 +54,6 @@ Set `NEXT_PUBLIC_SITE_URL` (see `.env.example`) to the live address once the dom
 
 ## Contact form
 
-The site is static, so enquiries post to a hosted form service. Copy `.env.example` to `.env.local` and set `NEXT_PUBLIC_CONTACT_ENDPOINT` to a Formspree form URL (or any endpoint that accepts a form POST and returns 2xx). Without it, the form shows an error asking the visitor to email instead.
+Enquiries are sent by a Server Action (`app/contact/actions.ts`) through [Resend](https://resend.com). Copy `.env.example` to `.env.local` and set `RESEND_API_KEY`, `ENQUIRY_TO` (where enquiries are delivered) and `ENQUIRY_FROM` (the sender; use `onboarding@resend.dev` until the domain is verified with Resend). Set the same three on the host. Without them, the form shows an error asking the visitor to email instead.
+
+A hidden honeypot field catches simple bots, and sends are capped at 5 an hour per visitor and 50 a day overall. The caps are counted in memory, so each server instance keeps its own count and they reset on restart.

@@ -4,9 +4,9 @@ import type { ImageSet } from "@/lib/format";
 import { getImage } from "@/lib/images";
 
 // Series live as one JSON file each in content/series/, named by slug, so new
-// work is added by dropping in a file. They are read at build time only: the
-// site is a static export, so pages call these from Server Components and
-// hand plain data down to anything interactive.
+// work is added by dropping in a file. They are read on the server only:
+// pages call these from Server Components and hand plain data down to
+// anything interactive.
 
 export type Tint = "sky" | "sage" | "sand" | "mist";
 

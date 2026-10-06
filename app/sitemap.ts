@@ -3,7 +3,7 @@ import { plateHref } from "@/lib/format";
 import { siteUrl } from "@/lib/metadata";
 import { getAllSeries } from "@/lib/series";
 
-// Written to out/sitemap.xml at build. A sitemap needs full addresses, so it
+// Generated at build. A sitemap needs full addresses, so it
 // stays empty until NEXT_PUBLIC_SITE_URL is set.
 export const dynamic = "force-static";
 
