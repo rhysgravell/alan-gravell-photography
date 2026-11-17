@@ -101,7 +101,7 @@ export function EnquiryForm() {
 
       {state?.ok === false && (
         <p role="alert" className="type-body-s text-secondary">
-          {state.error} Please try again, or write to{" "}
+          {state.error} Or write to{" "}
           <a href={`mailto:${site.email}`} className="link text-primary">
             {site.email}
           </a>
