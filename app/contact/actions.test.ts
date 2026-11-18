@@ -134,7 +134,7 @@ describe("sendEnquiry", () => {
       vi.stubEnv(name, "");
       expect(await sendEnquiry(null, form())).toEqual({
         ok: false,
-        error: "Your enquiry could not be sent.",
+        error: "Your enquiry could not be sent. Please try again.",
         values: valid,
       });
       expect(send).not.toHaveBeenCalled();
@@ -144,7 +144,7 @@ describe("sendEnquiry", () => {
       send.mockResolvedValue({ data: null, error: { name: "validation_error", message: "Bad from" } });
       expect(await sendEnquiry(null, form())).toMatchObject({
         ok: false,
-        error: "Your enquiry could not be sent.",
+        error: "Your enquiry could not be sent. Please try again.",
       });
     });
 
@@ -152,13 +152,13 @@ describe("sendEnquiry", () => {
       send.mockRejectedValue(new Error("network down"));
       expect(await sendEnquiry(null, form())).toMatchObject({
         ok: false,
-        error: "Your enquiry could not be sent.",
+        error: "Your enquiry could not be sent. Please try again.",
       });
     });
   });
 
   describe("rate limits", () => {
-    const tooMany = { ok: false, error: "Too many enquiries have been sent just now." };
+    const tooMany = { ok: false, error: "Too many enquiries have been sent just now. Please try again later." };
 
     it("allows 5 an hour from one visitor", async () => {
       for (let i = 0; i < 5; i++) expect(await sendEnquiry(null, form())).toEqual({ ok: true });

@@ -62,13 +62,13 @@ export async function sendEnquiry(
   const h = await headers();
   const ip = h.get("x-forwarded-for")?.split(",")[0].trim() || h.get("x-real-ip") || "unknown";
   if (!perVisitor(ip) || !perDay("all")) {
-    return { ok: false, error: "Too many enquiries have been sent just now.", values };
+    return { ok: false, error: "Too many enquiries have been sent just now. Please try again later.", values };
   }
 
   const { RESEND_API_KEY, ENQUIRY_FROM, ENQUIRY_TO } = process.env;
   if (!RESEND_API_KEY || !ENQUIRY_FROM || !ENQUIRY_TO) {
     console.error("RESEND_API_KEY, ENQUIRY_FROM or ENQUIRY_TO is not set; enquiry not sent.");
-    return { ok: false, error: "Your enquiry could not be sent.", values };
+    return { ok: false, error: "Your enquiry could not be sent. Please try again.", values };
   }
 
   const { regarding, name, email, message } = parsed.data;
@@ -83,7 +83,7 @@ export async function sendEnquiry(
     if (error) throw error;
   } catch (err) {
     console.error("Resend failed to send enquiry:", err);
-    return { ok: false, error: "Your enquiry could not be sent.", values };
+    return { ok: false, error: "Your enquiry could not be sent. Please try again.", values };
   }
 
   return { ok: true };
